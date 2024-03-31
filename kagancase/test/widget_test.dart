@@ -18,6 +18,7 @@ var anime = AnimeItemModel(
   malId: 28957,
   synopsis: '',
   url: '',
+  type: '',
 );
 
 void main() {
