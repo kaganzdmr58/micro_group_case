@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kagancase/globals/models/anime/anime_model.dart';
+import 'package:kagancase/modules/anime/view_model/anime_page_viewmodel.dart';
+import 'package:kagancase/modules/anime_detail/anime_detail_page.dart';
 
 class AnimeListPage extends StatefulWidget {
   const AnimeListPage({super.key});
@@ -9,63 +12,82 @@ class AnimeListPage extends StatefulWidget {
 }
 
 class _AnimeListPageState extends State<AnimeListPage> {
-  static const animeChannel = MethodChannel("com.example.casekagan/anime");
-  var data = "0";
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    context.read<AnimePageViewModel>().nextPage();
+    _scrollController.addListener(_scrollListener);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                data,
-                style: const TextStyle(fontSize: 20, color: Colors.amber),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  fetchAnimeListFromNative(page: 1);
-                },
-                child: const Text("Fetch List"),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  fetchAnimeListFromNative(page: 2);
-                },
-                child: const Text("Fetch List first"),
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        title: const Text(
+          "Anime List Page",
+          style: TextStyle(fontSize: 24),
         ),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<AnimePageViewModel, List<AnimeItemModel>>(
+        builder: (context, snapshot) {
+          if (snapshot.isNotEmpty) {
+            return ListView.builder(
+              controller: _scrollController,
+              itemCount: snapshot.length,
+              itemBuilder: (context, index) {
+                AnimeItemModel animeItem = snapshot[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AnimeDetailPage(model: animeItem),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      leading:
+                          Image.network(animeItem.images.jpg.small_image_url),
+                      title: Text(
+                        animeItem.title,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Rating: ${animeItem.rating.toString()}'),
+                          Text('Score: ${animeItem.score.toString()}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }
 
-  Future getAnimeList() async {
-    final int val = await animeChannel.invokeMethod("fetchAnimeList");
-
-    print("animeFetchList : $val ");
-    setState(() {
-      data = "$val";
-    });
+  void _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      context.read<AnimePageViewModel>().nextPage();
+    }
   }
 
-  Future<List<String>> fetchAnimeListFromNative({int page = 1}) async {
-    try {
-      final List<dynamic> response =
-          await animeChannel.invokeMethod('fetchAnimeList', {'page': page});
-      final List<String> animeList = response.cast<String>();
-
-      setState(() {
-        data = "${response.first}";
-      });
-      return animeList;
-    } on PlatformException catch (e) {
-      print("Failed to fetch anime list: '${e.message}'.");
-      return [];
-    }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
