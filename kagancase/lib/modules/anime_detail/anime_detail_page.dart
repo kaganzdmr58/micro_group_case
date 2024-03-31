@@ -34,7 +34,8 @@ class _AnimeDetailPageState extends State<AnimeDetailPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image.network(widget.model.images.jpg.image_url),
+              if (widget.model.images.jpg.image_url != null)
+                Image.network(widget.model.images.jpg.image_url ?? ""),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(

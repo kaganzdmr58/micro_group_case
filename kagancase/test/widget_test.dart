@@ -1,30 +1,39 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kagancase/globals/models/anime/anime_image_size_model.dart';
+import 'package:kagancase/globals/models/anime/anime_images_model.dart';
+import 'package:kagancase/globals/models/anime/anime_model.dart';
+import 'package:kagancase/modules/anime_detail/anime_detail_page.dart';
+import 'package:kagancase/modules/anime_detail/view_model/anime_detail_view_model.dart';
 
-import 'package:kagancase/main.dart';
+var anime = AnimeItemModel(
+  title: 'Anime 123',
+  rating: "4.5",
+  score: 8.7,
+  genres: [],
+  images: AnimeImagesModel(
+    jpg: AnimeImageSizeModel(),
+  ),
+  malId: 28957,
+  synopsis: '',
+  url: '',
+);
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Find first text on AnimeDetailPage',
+      (WidgetTester tester) async {
+    final widget = MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AnimeDetailPageViewModel()),
+      ],
+      child: MaterialApp(
+        home: AnimeDetailPage(model: anime),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(widget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Anime 123'), findsWidgets);
   });
 }

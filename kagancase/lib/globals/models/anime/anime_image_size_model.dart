@@ -1,12 +1,12 @@
 class AnimeImageSizeModel {
-  final String image_url;
-  final String small_image_url;
-  final String large_image_url;
+  final String? image_url;
+  final String? small_image_url;
+  final String? large_image_url;
 
   AnimeImageSizeModel({
-    required this.image_url,
-    required this.large_image_url,
-    required this.small_image_url,
+    this.image_url,
+    this.large_image_url,
+    this.small_image_url,
   });
 
   factory AnimeImageSizeModel.fromJson(Map<String, dynamic> json) {

@@ -52,7 +52,7 @@ class _AnimeListPageState extends State<AnimeListPage> {
                     },
                     child: ListTile(
                       leading:
-                          Image.network(animeItem.images.jpg.small_image_url),
+                          Image.network(animeItem.images.jpg.small_image_url ??""),
                       title: Text(
                         animeItem.title,
                         style: const TextStyle(fontSize: 20),
