@@ -33,9 +33,10 @@ class _AnimeDetailPageState extends State<AnimeDetailPage> {
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.model.images.jpg.image_url != null)
-                Image.network(widget.model.images.jpg.image_url ?? ""),
+                Center(child: Image.network(widget.model.images.jpg.image_url ?? "")),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
@@ -46,13 +47,26 @@ class _AnimeDetailPageState extends State<AnimeDetailPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(widget.model.rating),
+                child: Text(
+                  "Rating : ${widget.model.rating}",
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
               if (widget.model.score != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(widget.model.score.toString()),
+                  child: Text(
+                    "IMDB : ${widget.model.score}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "Episodes : ${widget.model.episodes.toString()}",
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Wrap(
@@ -74,10 +88,6 @@ class _AnimeDetailPageState extends State<AnimeDetailPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(widget.model.synopsis),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text(widget.model.episodes.toString()),
               ),
               BlocBuilder<AnimeDetailPageViewModel, List<CharactersModel>>(
                   builder: (context, snapshot) {

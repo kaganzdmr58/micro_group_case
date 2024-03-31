@@ -8,6 +8,7 @@ class AnimeItemModel {
   final AnimeImagesModel images;
   final String title;
   final String rating;
+  final String type;
   final List<AnimeGenresModel?> genres;
   final String synopsis;
   final int? episodes;
@@ -19,6 +20,7 @@ class AnimeItemModel {
     required this.images,
     required this.title,
     required this.rating,
+    required this.type,
     required this.genres,
     required this.synopsis,
     this.episodes,
@@ -36,6 +38,7 @@ class AnimeItemModel {
       images: AnimeImagesModel.fromJson(json['images']),
       title: json['title'],
       rating: json['rating'],
+      type: json['type'],
       genres: genres,
       synopsis: json['synopsis'],
       episodes: json['episodes'] != null ? json["episodes"] : 0,

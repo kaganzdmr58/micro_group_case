@@ -13,6 +13,7 @@ class AnimeListPage extends StatefulWidget {
 
 class _AnimeListPageState extends State<AnimeListPage> {
   final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +30,33 @@ class _AnimeListPageState extends State<AnimeListPage> {
           style: TextStyle(fontSize: 24),
         ),
         centerTitle: true,
+        actions: [
+          PopupMenuButton<int>(
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 1, child: Text('All')),
+              PopupMenuItem(value: 2, child: Text('Movie')),
+              PopupMenuItem(value: 3, child: Text('TV')),
+            ],
+            onSelected: (value) {
+              switch (value) {
+                case 1:
+                  context.read<AnimePageViewModel>().getCurrentAnimeList();
+                  break;
+                case 2:
+                  context
+                      .read<AnimePageViewModel>()
+                      .getSearchAnimeList("Movie");
+                  break;
+                case 3:
+                  context
+                      .read<AnimePageViewModel>()
+                      .getSearchAnimeList("TV");
+                  break;
+                
+              }
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<AnimePageViewModel, List<AnimeItemModel>>(
         builder: (context, snapshot) {
@@ -51,8 +79,8 @@ class _AnimeListPageState extends State<AnimeListPage> {
                       );
                     },
                     child: ListTile(
-                      leading:
-                          Image.network(animeItem.images.jpg.small_image_url ??""),
+                      leading: Image.network(
+                          animeItem.images.jpg.small_image_url ?? ""),
                       title: Text(
                         animeItem.title,
                         style: const TextStyle(fontSize: 20),

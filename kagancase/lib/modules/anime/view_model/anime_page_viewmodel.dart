@@ -9,12 +9,27 @@ class AnimePageViewModel extends Cubit<List<AnimeItemModel>> {
 
   Future<void> getAnimeList() async {
     var list = await repo.getAnimeAllAnimeList();
-    print("getAnimeList ${list}");
     emit([...list]);
+  }
+
+  Future<void> getCurrentAnimeList() async {
+    var list = await repo.getAnimeAllAnimeList();
+    emit(list);
   }
 
   Future<void> nextPage() async {
     await repo.nexPage();
     getAnimeList();
+  }
+
+  Future<void> getSearchAnimeList(String search) async {
+    var list = await repo.getAnimeAllAnimeList();
+    var newList = <AnimeItemModel>[];
+    for (AnimeItemModel a in list) {
+      if (a.type.toLowerCase() == search.toLowerCase()) {
+        newList.add(a);
+      }
+    }
+    emit(newList);
   }
 }
